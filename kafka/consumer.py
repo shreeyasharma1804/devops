@@ -1,4 +1,5 @@
 from confluent_kafka import Consumer, KafkaException, KafkaError, TopicPartition
+import time
 
 conf = {
     'bootstrap.servers': 'localhost:19092,localhost:19093,localhost:19094',
@@ -7,13 +8,13 @@ conf = {
 }
 
 consumer = Consumer(conf)
-# consumer.subscribe(['test-topic'])
+consumer.subscribe(['test-topic'])
 
 # To subscribe from a given partition
-topic = 'test-topic'
-partition = 0
+# topic = 'test-topic'
+# partition = 0
 
-consumer.assign([TopicPartition(topic, partition)])
+# consumer.subscribe([TopicPartition(topic, partition)])
 
 try:
     while True:
@@ -27,6 +28,7 @@ try:
                 raise KafkaException(msg.error())
         else:
             print(f"Received message: {msg.value().decode('utf-8')} from partition {msg.partition()}")
+        time.sleep(1)
 
 finally:
     consumer.close()

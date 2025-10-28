@@ -9,7 +9,7 @@ conf = {
 producer = Producer(conf)
 topic = "test-topic"
 
-for i in range(10, 20):
+for i in range(40, 60):
     message = f"Hello Kafka! Message #{i}"
     print(message)
     producer.produce(
