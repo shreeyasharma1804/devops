@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  prometheus:
+    image: prometheuscontainer
+    container_name: prometheus
+    networks:
+      - monitoring
+    ports:
+      - "9090:9090"
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    networks:
+      - monitoring
+    ports:
+      - "9100:9100"
+    volumes:
+      - prometheus_data:/var/lib/node_exporter
+
+networks:
+  monitoring:
+    driver: bridge
+
+volumes:
+  prometheus_data:
