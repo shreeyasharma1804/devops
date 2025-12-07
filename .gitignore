@@ -1,1 +1,4 @@
 .env
+node_app/node_modules
+js7
+prometheus/node_exporter-1.10.2.linux-amd64/
