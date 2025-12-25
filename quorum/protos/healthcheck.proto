@@ -8,4 +8,5 @@ service HealthCheck {
 
 message HealthCheckMessage {
   string message = 1;
+  string server = 2;
 }

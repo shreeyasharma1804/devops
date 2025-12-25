@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11healthcheck.proto\x12\x0bhealthcheck\"%\n\x12HealthCheckMessage\x12\x0f\n\x07message\x18\x01 \x01(\t2d\n\x0bHealthCheck\x12U\n\x0fSendHealthCheck\x12\x1f.healthcheck.HealthCheckMessage\x1a\x1f.healthcheck.HealthCheckMessage\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11healthcheck.proto\x12\x0bhealthcheck\"5\n\x12HealthCheckMessage\x12\x0f\n\x07message\x18\x01 \x01(\t\x12\x0e\n\x06server\x18\x02 \x01(\t2d\n\x0bHealthCheck\x12U\n\x0fSendHealthCheck\x12\x1f.healthcheck.HealthCheckMessage\x1a\x1f.healthcheck.HealthCheckMessage\"\x00\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -32,7 +32,7 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'healthcheck_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
   _globals['_HEALTHCHECKMESSAGE']._serialized_start=34
-  _globals['_HEALTHCHECKMESSAGE']._serialized_end=71
-  _globals['_HEALTHCHECK']._serialized_start=73
-  _globals['_HEALTHCHECK']._serialized_end=173
+  _globals['_HEALTHCHECKMESSAGE']._serialized_end=87
+  _globals['_HEALTHCHECK']._serialized_start=89
+  _globals['_HEALTHCHECK']._serialized_end=189
 # @@protoc_insertion_point(module_scope)
