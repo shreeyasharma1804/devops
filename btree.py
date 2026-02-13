@@ -1,7 +1,5 @@
 MAXKEYS = 3
 
-[1,2,3]
-
 class Node:
 
     def __init__(self):
@@ -18,17 +16,20 @@ class BTree():
         return self.root
 
     def insert(self, value, node):
+        inserted = False
         if(len(node.children) == 0):
+            # print("Here", value)
             if(len(node.values) == 0):
                 node.values.append(value)
             else:
-                for i in range(len(node.values)-1):
-                    if(node.values[i] > value and node.values[i+1] < value):
+                for i in range(len(node.values)):
+                    if(value < node.values[i]):
                         node.values.insert(i, value)
+                        inserted = True
                         break
-                node.values.append(value)
-            if(len(node.values) > MAXKEYS):
-                self.splitNode(node)
+                if(not inserted):
+                    node.values.append(value)
+            self.splitNode(node)
 
         elif(value < node.values[0]):
             self.insert(value, node.children[0])
@@ -37,23 +38,54 @@ class BTree():
             self.insert(value, node.children[-1])
 
         else:
-            for i in range(1, len(node.values)-1):
+            for i in range(1, len(node.values)):
                 if(value > node.values[i-1] and value < node.values[i]):
                     self.insert(value, node.children[i])
 
     def splitNode(self, node):
+
+        if(len(node.values) <= MAXKEYS):
+            return
+
         evictedKeyIndex = MAXKEYS%2
         evictedKey = node.values[evictedKeyIndex]
         newNodeLeft = Node()
-        newNodeLeft.values = node.values[:evictedKeyIndex]
-        newNodeLeft.children = node.children
         newNodeRight = Node()
+        newNodeLeft.values = node.values[:evictedKeyIndex]
         newNodeRight.values = node.values[evictedKeyIndex+1:]
-        newNodeRight.children = node.children
-        # print(newNodeRight.values)
+
+        if(len(node.children) > 0):
+            newNodeLeft.children = node.children[:evictedKeyIndex+1]
+            newNodeRight.children = node.children[evictedKeyIndex+1:]
 
         if(node.parent):
-            print("Here")
+            inserted = False
+            insertedIndex = 0
+            for i in range(len(node.parent.values)):
+                if(evictedKey < node.parent.values[i]):
+                    inserted = True
+                    insertedIndex = i
+                    node.parent.values.insert(i, evictedKey)
+                    break
+            if(not inserted):
+                insertedIndex = len(node.parent.values)
+                node.parent.values.append(evictedKey)
+
+            if(insertedIndex == 0):
+                del node.parent.children[0]
+                node.parent.children.insert(insertedIndex, newNodeRight)
+                node.parent.children.insert(insertedIndex, newNodeLeft)
+
+            elif(insertedIndex == len(node.parent.values)-1):
+                del node.parent.children[-1]
+                node.parent.children.append(newNodeLeft)
+                node.parent.children.append(newNodeRight)
+
+            else:
+                for i in range(1, len(node.parent.values)-1):
+                    del node.parent.children[i]
+                node.parent.children.insert(1, newNodeRight)
+                node.parent.children.insert(1, newNodeLeft)
             return
         else:
             newNodeRoot = Node()
@@ -62,8 +94,8 @@ class BTree():
             newNodeRoot.children.append(newNodeRight)
             self.root = newNodeRoot
 
-        newNodeLeft.parent = newNodeRoot
-        newNodeRight.parent = newNodeRoot
+            newNodeLeft.parent = newNodeRoot
+            newNodeRight.parent = newNodeRoot
 
     def printTree(self, node):
         if(len(node.values) == 0):
@@ -82,5 +114,12 @@ tree.insert(31, tree.getRoot())
 tree.insert(32, tree.getRoot())
 tree.insert(46, tree.getRoot())
 tree.insert(33, tree.getRoot())
-
+tree.insert(36, tree.getRoot())
+tree.insert(34, tree.getRoot())
+tree.insert(20, tree.getRoot())
+tree.insert(21, tree.getRoot())
+tree.insert(47, tree.getRoot())
+tree.insert(37, tree.getRoot())
+tree.insert(38, tree.getRoot())
+# tree.insert(39, tree.getRoot())
 tree.printTree(tree.getRoot())
