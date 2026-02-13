@@ -15,10 +15,9 @@ class BTree():
     def getRoot(self):
         return self.root
 
-    def insert(self, value, node):
+    def insert(self, value, node, index=0):
         inserted = False
         if(len(node.children) == 0):
-            # print("Here", value)
             if(len(node.values) == 0):
                 node.values.append(value)
             else:
@@ -29,20 +28,22 @@ class BTree():
                         break
                 if(not inserted):
                     node.values.append(value)
-            self.splitNode(node)
+            # print(value, node.values)
+            # print("-----------------------------")
+            self.splitNode(node, index)
 
         elif(value < node.values[0]):
-            self.insert(value, node.children[0])
+            self.insert(value, node.children[0], 0)
 
         elif(value > node.values[-1]):
-            self.insert(value, node.children[-1])
+            self.insert(value, node.children[-1], len(node.children)-1)
 
         else:
             for i in range(1, len(node.values)):
                 if(value > node.values[i-1] and value < node.values[i]):
-                    self.insert(value, node.children[i])
+                    self.insert(value, node.children[i], i)
 
-    def splitNode(self, node):
+    def splitNode(self, node, index):
 
         if(len(node.values) <= MAXKEYS):
             return
@@ -53,12 +54,20 @@ class BTree():
         newNodeRight = Node()
         newNodeLeft.values = node.values[:evictedKeyIndex]
         newNodeRight.values = node.values[evictedKeyIndex+1:]
-
+    
         if(len(node.children) > 0):
             newNodeLeft.children = node.children[:evictedKeyIndex+1]
             newNodeRight.children = node.children[evictedKeyIndex+1:]
 
         if(node.parent):
+
+            newNodeRight.parent = node.parent
+            newNodeLeft.parent = node.parent
+
+            # print(node.values, node.parent.values)
+            # print("New nodes", newNodeLeft.values, newNodeRight.values)
+
+
             inserted = False
             insertedIndex = 0
             for i in range(len(node.parent.values)):
@@ -71,21 +80,12 @@ class BTree():
                 insertedIndex = len(node.parent.values)
                 node.parent.values.append(evictedKey)
 
-            if(insertedIndex == 0):
-                del node.parent.children[0]
-                node.parent.children.insert(insertedIndex, newNodeRight)
-                node.parent.children.insert(insertedIndex, newNodeLeft)
+            del node.parent.children[index]
+            node.parent.children.insert(index, newNodeRight)
+            node.parent.children.insert(index, newNodeLeft)
 
-            elif(insertedIndex == len(node.parent.values)-1):
-                del node.parent.children[-1]
-                node.parent.children.append(newNodeLeft)
-                node.parent.children.append(newNodeRight)
+            self.splitNode(node.parent, 0)
 
-            else:
-                for i in range(1, len(node.parent.values)-1):
-                    del node.parent.children[i]
-                node.parent.children.insert(1, newNodeRight)
-                node.parent.children.insert(1, newNodeLeft)
             return
         else:
             newNodeRoot = Node()
@@ -121,5 +121,5 @@ tree.insert(21, tree.getRoot())
 tree.insert(47, tree.getRoot())
 tree.insert(37, tree.getRoot())
 tree.insert(38, tree.getRoot())
-# tree.insert(39, tree.getRoot())
+tree.insert(39, tree.getRoot())
 tree.printTree(tree.getRoot())
